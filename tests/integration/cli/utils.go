@@ -122,8 +122,6 @@ func runDefraCommand(t *testing.T, conf DefraNodeConfig, args []string) (stdout,
 		defraCmd.RootCmd.SetArgs(args)
 		_ = defraCmd.Execute(ctx)
 	})
-	t.Log("⭐️ stdout", stdout) //WIP
-	t.Log("⭐️ stderr", stderr) //WIP
 	return stdout, stderr
 }
 

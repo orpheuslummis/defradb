@@ -26,12 +26,3 @@ func TestServerDumpInvalidStoreErrs(t *testing.T) {
 	// assertContainsSubstring(t, stderr, "invalid datastore type")
 	assertContainsSubstring(t, stderr, "server-side dump is only supported for the Badger datastore")
 }
-
-func TestServerDump(t *testing.T) {
-	conf := NewDefraNodeDefaultConfig(t)
-	stopDefra := runDefraNode(t, conf)
-	_ = stopDefra()
-
-	_, _ = runDefraCommand(t, conf, []string{"server-dump"})
-	// WIP unsure why there is no output
-}

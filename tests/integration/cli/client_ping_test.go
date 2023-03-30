@@ -11,6 +11,7 @@
 package clitest
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -54,6 +55,9 @@ func TestPingCommandToInvalidHost(t *testing.T) {
 
 func TestPingCommandNoHost(t *testing.T) {
 	conf := NewDefraNodeDefaultConfig(t)
-	_, stderr := runDefraCommand(t, conf, []string{"client", "ping", "--url", "localhost:56788"}) //WIP
+	p, err := findFreePortInRange(49152, 65535)
+	assert.NoError(t, err)
+	addr := fmt.Sprintf("localhost:%d", p)
+	_, stderr := runDefraCommand(t, conf, []string{"client", "ping", "--url", addr})
 	assertContainsSubstring(t, stderr, "failed to send ping")
 }
