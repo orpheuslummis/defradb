@@ -19,10 +19,8 @@ import (
 	"github.com/sourcenetwork/defradb/errors"
 )
 
-var reinitialize bool
-
 /*
-The `init` command initializes the configuration file and root directory..
+The `init` command initializes the configuration file and root directory.
 
 It covers three possible situations:
 - root dir doesn't exist
@@ -51,37 +49,25 @@ var initCmd = &cobra.Command{
 						return err
 					}
 				} else {
-					log.FeedbackError(
-						cmd.Context(),
-						fmt.Sprintf(
-							"Configuration file already exists at %v. Consider using --reinitialize",
-							cfg.ConfigFilePath(),
-						),
-					)
+					if err := cfg.WriteConfigFile(); err != nil {
+						return errors.Wrap("failed to create configuration file", err)
+					}
 				}
 			} else {
-				if err := cfg.WriteConfigFile(); err != nil {
-					return errors.Wrap("failed to create configuration file", err)
+				if err := cfg.CreateRootDirAndConfigFile(); err != nil {
+					return err
 				}
 			}
-		} else {
-			if err := cfg.CreateRootDirAndConfigFile(); err != nil {
-				return err
-			}
-		}
-		return nil
-	},
-}
+			return nil
+		},
+	}
 
-func init() {
-	rootCmd.AddCommand(initCmd)
-
-	initCmd.Flags().BoolVar(
+	cmd.Flags().BoolVar(
 		&reinitialize, "reinitialize", false,
 		"Reinitialize the configuration file",
 	)
 
-	initCmd.Flags().StringVar(
+	cmd.Flags().StringVar(
 		&cfg.Rootdir, "rootdir", config.DefaultRootDir(),
 		"Directory for data and configuration to use",
 	)
