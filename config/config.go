@@ -73,6 +73,7 @@ const (
 	logLevelInfo    = "info"
 	logLevelError   = "error"
 	logLevelFatal   = "fatal"
+	rootdirKey      = "rootdircli"
 )
 
 // Config is DefraDB's main configuration struct, embedding component-specific config structs.
@@ -122,7 +123,6 @@ func (cfg *Config) LoadWithRootdir(withRootdir bool) error {
 	}
 
 	if withRootdir {
-		cfg.v.AddConfigPath(cfg.Rootdir)
 		if err := cfg.v.ReadInConfig(); err != nil {
 			return NewErrReadingConfigFile(err)
 		}
@@ -144,6 +144,35 @@ func (cfg *Config) LoadWithRootdir(withRootdir bool) error {
 		return err
 	}
 
+	return nil
+}
+
+// LoadRootDir obtains the rootdir param from the CLI flag `--rootdir` and loads it into the Config.
+func (cfg *Config) LoadRootdir() error {
+	rootDir, err := cfg.getRootdir()
+	if err != nil {
+		return err
+	}
+	if err := cfg.setRootdir(rootDir); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cfg *Config) getRootdir() (string, error) {
+	rootdir := cfg.v.GetString(rootdirKey)
+	if rootdir == "" {
+		return DefaultRootDir(), nil
+	}
+	return rootdir, nil
+}
+
+func (cfg *Config) setRootdir(rootdir string) error {
+	if rootdir == "" {
+		return NewErrInvalidRootDir(rootdir)
+	}
+	cfg.Rootdir = rootdir
+	cfg.v.AddConfigPath(cfg.Rootdir)
 	return nil
 }
 

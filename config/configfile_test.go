@@ -77,7 +77,8 @@ func TestReadConfigFileForLogger(t *testing.T) {
 	assert.True(t, cfg.ConfigFileExists())
 
 	cfgFromFile := DefaultConfig()
-	cfgFromFile.Rootdir = tmpdir
+	err = cfgFromFile.setRootdir(tmpdir)
+	assert.NoError(t, err)
 	err = cfgFromFile.LoadWithRootdir(true)
 	assert.NoError(t, err)
 
@@ -106,7 +107,8 @@ func TestReadConfigFileForDatastore(t *testing.T) {
 	assert.NoError(t, err)
 
 	cfgFromFile := DefaultConfig()
-	cfgFromFile.Rootdir = tmpdir
+	err = cfgFromFile.setRootdir(tmpdir)
+	assert.NoError(t, err)
 	err = cfgFromFile.LoadWithRootdir(true)
 	assert.NoError(t, err)
 
@@ -116,10 +118,11 @@ func TestReadConfigFileForDatastore(t *testing.T) {
 }
 func TestConfigFileExists(t *testing.T) {
 	cfg := DefaultConfig()
-	cfg.Rootdir = t.TempDir()
+	err := cfg.setRootdir(t.TempDir())
+	assert.NoError(t, err)
 	assert.False(t, cfg.ConfigFileExists())
 
-	err := cfg.WriteConfigFile()
+	err = cfg.WriteConfigFile()
 	assert.NoError(t, err)
 	assert.True(t, cfg.ConfigFileExists())
 }
