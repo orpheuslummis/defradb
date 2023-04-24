@@ -27,26 +27,37 @@ It covers three possible situations:
 - root dir exists and doesn't contain a config file
 - root dir exists and contains a config file
 */
-var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "Initialize DefraDB's root directory and configuration file",
-	Long:  "Initialize a directory for configuration and data at the given path.",
-	// Load a default configuration, considering env. variables and CLI flags.
-	PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
-		if err := cfg.LoadWithRootdir(false); err != nil {
-			return errors.Wrap("failed to load configuration", err)
-		}
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if config.FolderExists(cfg.Rootdir) {
-			if cfg.ConfigFileExists() {
-				if reinitialize {
-					if err := cfg.DeleteConfigFile(); err != nil {
-						return err
-					}
-					if err := cfg.WriteConfigFile(); err != nil {
-						return err
+func MakeInitCommand(cfg *config.Config) *cobra.Command {
+	var reinitialize bool
+	var cmd = &cobra.Command{
+		Use:   "init",
+		Short: "Initialize DefraDB's root directory and configuration file",
+		Long:  "Initialize a directory for configuration and data at the given path.",
+		// Load a default configuration, considering env. variables and CLI flags.
+		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
+			if err := cfg.LoadWithRootdir(false); err != nil {
+				return errors.Wrap("failed to load configuration", err)
+			}
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if config.FolderExists(cfg.Rootdir) {
+				if cfg.ConfigFileExists() {
+					if reinitialize {
+						if err := cfg.DeleteConfigFile(); err != nil {
+							return err
+						}
+						if err := cfg.WriteConfigFile(); err != nil {
+							return err
+						}
+					} else {
+						log.FeedbackError(
+							cmd.Context(),
+							fmt.Sprintf(
+								"Configuration file already exists at %v. Consider using --reinitialize",
+								cfg.ConfigFilePath(),
+							),
+						)
 					}
 				} else {
 					if err := cfg.WriteConfigFile(); err != nil {
@@ -67,8 +78,5 @@ var initCmd = &cobra.Command{
 		"Reinitialize the configuration file",
 	)
 
-	cmd.Flags().StringVar(
-		&cfg.Rootdir, "rootdir", config.DefaultRootDir(),
-		"Directory for data and configuration to use",
-	)
+	return cmd
 }

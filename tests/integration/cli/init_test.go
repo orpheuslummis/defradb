@@ -22,7 +22,7 @@ import (
 // Executing init command creates valid config file.
 func TestCLIInitCommand(t *testing.T) {
 	conf := NewDefraNodeDefaultConfig(t)
-	_, stderr := runDefraCommand(t, conf, []string{"init", conf.rootDir})
+	_, stderr := runDefraCommand(t, conf, []string{"init", "--rootdir", conf.rootDir})
 	cfgfilePath := filepath.Join(conf.rootDir, config.DefaultConfigFileName)
 	assertContainsSubstring(t, stderr, "Created config file at "+cfgfilePath)
 	if !assert.FileExists(t, cfgfilePath) {
@@ -33,9 +33,9 @@ func TestCLIInitCommand(t *testing.T) {
 func TestCLIInitCommandTwiceErrors(t *testing.T) {
 	conf := NewDefraNodeDefaultConfig(t)
 	cfgfilePath := filepath.Join(conf.rootDir, config.DefaultConfigFileName)
-	_, stderr := runDefraCommand(t, conf, []string{"init", conf.rootDir})
+	_, stderr := runDefraCommand(t, conf, []string{"init", "--rootdir", conf.rootDir})
 	assertContainsSubstring(t, stderr, "Created config file at "+cfgfilePath)
-	_, stderr = runDefraCommand(t, conf, []string{"init", conf.rootDir})
+	_, stderr = runDefraCommand(t, conf, []string{"init", "--rootdir", conf.rootDir})
 	assertContainsSubstring(t, stderr, "Configuration file already exists at "+cfgfilePath)
 }
 
@@ -43,9 +43,9 @@ func TestCLIInitCommandTwiceErrors(t *testing.T) {
 func TestInitCommandTwiceReinitalize(t *testing.T) {
 	conf := NewDefraNodeDefaultConfig(t)
 	cfgfilePath := filepath.Join(conf.rootDir, config.DefaultConfigFileName)
-	_, stderr := runDefraCommand(t, conf, []string{"init", conf.rootDir})
+	_, stderr := runDefraCommand(t, conf, []string{"init", "--rootdir", conf.rootDir})
 	assertContainsSubstring(t, stderr, "Created config file at "+cfgfilePath)
-	_, stderr = runDefraCommand(t, conf, []string{"init", conf.rootDir, "--reinitialize"})
+	_, stderr = runDefraCommand(t, conf, []string{"init", "--rootdir", conf.rootDir, "--reinitialize"})
 	assertContainsSubstring(t, stderr, "Deleted config file at "+cfgfilePath)
 	assertContainsSubstring(t, stderr, "Created config file at "+cfgfilePath)
 }

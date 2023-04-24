@@ -46,7 +46,7 @@ func TestPingCommandToInvalidHost(t *testing.T) {
 	}
 	// for some line in stderr to contain the error message
 	for _, line := range stderr {
-		if strings.Contains(line, config.ErrInvalidDatabaseURL.Error()) {
+		if strings.Contains(line, config.ErrFailedToValidateConfig.Error()) {
 			return
 		}
 	}

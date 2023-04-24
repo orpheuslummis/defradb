@@ -30,14 +30,10 @@ Start a database node, issue a request to a local or remote node, and much more.
 DefraDB is released under the BSL license, (c) 2022 Democratized Data Foundation.
 See https://docs.source.network/BSL.txt for more information.
 `,
-	// Runs on subcommands before their Run function, to handle configuration and top-level flags.
-	// Loads the rootDir containing the configuration file, otherwise warn about it and load a default configuration.
-	// This allows some subcommands (`init`, `start`) to override the PreRun to create a rootDir by default.
-	PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
-		if cfg.ConfigFileExists() {
-			if err := cfg.LoadWithRootdir(true); err != nil {
-				return errors.Wrap("failed to load config", err)
-			}
+		// Runs on subcommands before their Run function, to handle configuration and top-level flags.
+		// Loads the rootDir containing the configuration file, otherwise warn about it and load a default configuration.
+		// This allows some subcommands (`init`, `start`) to override the PreRun to create a rootDir by default.
+		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			if cfg.ConfigFileExists() {
 				if err := cfg.LoadWithRootdir(true); err != nil {
 					return errors.Wrap("failed to load config", err)
@@ -53,12 +49,11 @@ See https://docs.source.network/BSL.txt for more information.
 		},
 	}
 
-func init() {
-	rootCmd.PersistentFlags().StringVar(
-		&cfg.Rootdir, "rootdir", config.DefaultRootDir(),
-		"Directory for data and configuration to use",
+	cmd.PersistentFlags().String(
+		"rootdir", "",
+		"Directory for data and configuration to use (default: $HOME/.defradb)",
 	)
-	err := cfg.BindFlag("rootdircli", cmd.PersistentFlags().Lookup("rootdir"))
+	err := cfg.BindFlag(config.RootdirKey, cmd.PersistentFlags().Lookup("rootdir"))
 	if err != nil {
 		log.FeedbackFatalE(context.Background(), "Could not bind rootdir", err)
 	}
@@ -125,5 +120,6 @@ func init() {
 	if err != nil {
 		log.FeedbackFatalE(context.Background(), "Could not bind api.address", err)
 	}
+
 	return cmd
 }

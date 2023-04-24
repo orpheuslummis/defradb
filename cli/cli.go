@@ -103,10 +103,10 @@ func NewDefraCommand(cfg *config.Config) DefraCommand {
 
 func (defraCmd *DefraCommand) Execute(ctx context.Context) error {
 	// Silence cobra's default output to control usage and error display.
-	rootCmd.SilenceUsage = true
-	rootCmd.SilenceErrors = true
-	rootCmd.SetOut(os.Stdout)
-	cmd, err := rootCmd.ExecuteContextC(ctx)
+	defraCmd.RootCmd.SilenceUsage = true
+	defraCmd.RootCmd.SilenceErrors = true
+	defraCmd.RootCmd.SetOut(os.Stdout)
+	cmd, err := defraCmd.RootCmd.ExecuteContextC(ctx)
 	if err != nil {
 		// Intentional cancellation.
 		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {

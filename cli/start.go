@@ -50,11 +50,11 @@ func MakeStartCommand(cfg *config.Config) *cobra.Command {
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			if cfg.ConfigFileExists() {
 				if err := cfg.LoadWithRootdir(true); err != nil {
-					return errors.Wrap("failed to load config", err)
+					return config.NewErrLoadingConfig(err)
 				}
 			} else {
 				if err := cfg.LoadWithRootdir(false); err != nil {
-					return errors.Wrap("failed to load config", err)
+					return config.NewErrLoadingConfig(err)
 				}
 				if config.FolderExists(cfg.Rootdir) {
 					if err := cfg.WriteConfigFile(); err != nil {
@@ -62,17 +62,8 @@ func MakeStartCommand(cfg *config.Config) *cobra.Command {
 					}
 					log.FeedbackInfo(cmd.Context(), fmt.Sprintf("Configuration loaded from DefraDB directory %v", cfg.Rootdir))
 				} else {
-					if err := cfg.LoadWithRootdir(false); err != nil {
-						return config.NewErrLoadingConfig(err)
-					}
-					if config.FolderExists(cfg.Rootdir) {
-						if err := cfg.WriteConfigFile(); err != nil {
-							return err
-						}
-					} else {
-						if err := cfg.CreateRootDirAndConfigFile(); err != nil {
-							return err
-						}
+					if err := cfg.CreateRootDirAndConfigFile(); err != nil {
+						return err
 					}
 				}
 			}

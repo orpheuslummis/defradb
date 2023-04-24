@@ -94,12 +94,13 @@ func TestReadConfigFileForDatastore(t *testing.T) {
 	tmpdir := t.TempDir()
 
 	cfg := DefaultConfig()
-	cfg.Rootdir = tmpdir
+	err := cfg.setRootdir(tmpdir)
+	assert.NoError(t, err)
 	cfg.Datastore.Store = "badger"
 	cfg.Datastore.Badger.Path = "dataPath"
 	cfg.Datastore.Badger.ValueLogFileSize = 512 * MiB
 
-	err := cfg.WriteConfigFile()
+	err = cfg.WriteConfigFile()
 	assert.NoError(t, err)
 
 	configPath := filepath.Join(tmpdir, DefaultConfigFileName)
@@ -116,6 +117,7 @@ func TestReadConfigFileForDatastore(t *testing.T) {
 	assert.Equal(t, filepath.Join(tmpdir, cfg.Datastore.Badger.Path), cfgFromFile.Datastore.Badger.Path)
 	assert.Equal(t, cfg.Datastore.Badger.ValueLogFileSize, cfgFromFile.Datastore.Badger.ValueLogFileSize)
 }
+
 func TestConfigFileExists(t *testing.T) {
 	cfg := DefaultConfig()
 	err := cfg.setRootdir(t.TempDir())

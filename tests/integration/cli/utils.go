@@ -34,7 +34,7 @@ import (
 	"github.com/sourcenetwork/defradb/config"
 )
 
-const COMMAND_DELAY_SECONDS = 1
+const COMMAND_TIMEOUT_SECONDS = 2
 
 type DefraNodeConfig struct {
 	rootDir  string
@@ -96,7 +96,7 @@ func runDefraNode(t *testing.T, conf DefraNodeConfig) func() []string {
 	time.Sleep(1 * time.Second) // time buffer for it to start
 	cancelAndOutput := func() []string {
 		cancel()
-		time.Sleep(500 * time.Millisecond) // time buffer for it to stop
+		time.Sleep(1 * time.Second) // time buffer for it to stop
 		lines, err := readLoglines(t, conf.logPath)
 		assert.NoError(t, err)
 		return lines
@@ -109,11 +109,13 @@ func runDefraCommand(t *testing.T, conf DefraNodeConfig, args []string) (stdout,
 	t.Helper()
 	cfg := config.DefaultConfig()
 	args = append([]string{
-		"--rootdir", conf.rootDir,
 		"--url", conf.APIURL,
 	}, args...)
+	if !contains(args, "--rootdir") {
+		args = append(args, "--rootdir", t.TempDir())
+	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), COMMAND_DELAY_SECONDS*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), COMMAND_TIMEOUT_SECONDS*time.Second)
 	defer cancel()
 
 	stdout, stderr = captureOutput(func() {
@@ -123,6 +125,15 @@ func runDefraCommand(t *testing.T, conf DefraNodeConfig, args []string) (stdout,
 		_ = defraCmd.Execute(ctx)
 	})
 	return stdout, stderr
+}
+
+func contains(args []string, arg string) bool {
+	for _, a := range args {
+		if a == arg {
+			return true
+		}
+	}
+	return false
 }
 
 func readLoglines(t *testing.T, fpath string) ([]string, error) {

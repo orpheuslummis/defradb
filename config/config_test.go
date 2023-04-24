@@ -135,8 +135,10 @@ func TestJSONSerialization(t *testing.T) {
 
 	assert.NoError(t, errUnmarshal)
 	assert.NoError(t, errSerialize)
-	for _, v := range m {
-		assert.NotEmpty(t, v)
+	for k, v := range m {
+		if k != "Rootdir" { // Rootdir is not serialized
+			assert.NotEmpty(t, v)
+		}
 	}
 }
 

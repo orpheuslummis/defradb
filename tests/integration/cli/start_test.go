@@ -11,6 +11,7 @@
 package clitest
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -51,14 +52,20 @@ func TestStartCommandWithStoreMemory(t *testing.T) {
 
 func TestStartCommandWithP2PAddr(t *testing.T) {
 	conf := NewDefraNodeDefaultConfig(t)
+	p2pport, err := findFreePortInRange(49152, 65535)
+	if err != nil {
+		t.Fatal(err)
+	}
+	addr := fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", p2pport)
 	_, stderr := runDefraCommand(t, conf, []string{
 		"start",
-		"--p2paddr", "/ip4/0.0.0.0/tcp/9500",
+		"--p2paddr", addr,
 		"--url", conf.APIURL,
 		"--tcpaddr", conf.GRPCAddr,
 	})
 	assertContainsSubstring(t, stderr, "Starting DefraDB service...")
-	assertContainsSubstring(t, stderr, "Starting P2P node, {\"P2P address\": \"/ip4/0.0.0.0/tcp/9500\"}")
+	logstring := fmt.Sprintf("Starting P2P node, {\"P2P address\": \"%s\"}", addr)
+	assertContainsSubstring(t, stderr, logstring)
 	assertNotContainsSubstring(t, stderr, "Error")
 }
 
