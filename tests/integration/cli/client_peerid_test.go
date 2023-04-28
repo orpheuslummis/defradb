@@ -15,6 +15,7 @@ import (
 )
 
 func TestPeerID(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 
@@ -28,6 +29,7 @@ func TestPeerID(t *testing.T) {
 }
 
 func TestPeerIDWithNoHost(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	_, stderr := runDefraCommand(t, conf, []string{"client", "peerid"})
 	assertContainsSubstring(t, stderr, "failed to request peer ID")

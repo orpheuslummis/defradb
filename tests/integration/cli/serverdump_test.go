@@ -15,12 +15,14 @@ import (
 )
 
 func TestServerDumpMemoryErrs(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	_, stderr := runDefraCommand(t, conf, []string{"server-dump", "--store", "memory"})
 	assertContainsSubstring(t, stderr, "server-side dump is only supported for the Badger datastore")
 }
 
 func TestServerDumpInvalidStoreErrs(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	_, stderr := runDefraCommand(t, conf, []string{"server-dump", "--store", "invalid"})
 	// assertContainsSubstring(t, stderr, "invalid datastore type")

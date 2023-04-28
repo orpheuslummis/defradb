@@ -21,6 +21,7 @@ import (
 )
 
 func TestPingSimple(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 
@@ -35,6 +36,7 @@ func TestPingSimple(t *testing.T) {
 }
 
 func TestPingCommandToInvalidHost(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 	_, stderr := runDefraCommand(t, conf, []string{"client", "ping", "--url", "'1!2:3!4'"})

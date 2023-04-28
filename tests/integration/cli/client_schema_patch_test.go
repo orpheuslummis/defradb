@@ -15,6 +15,7 @@ import (
 )
 
 func TestClientSchemaPatch(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 	defer stopDefra()
@@ -35,6 +36,7 @@ func TestClientSchemaPatch(t *testing.T) {
 }
 
 func TestClientSchemaPatch_InvalidJSONPatch(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 	defer stopDefra()

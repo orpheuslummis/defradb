@@ -15,6 +15,7 @@ import (
 )
 
 func TestRequestSimple(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 
@@ -28,6 +29,7 @@ func TestRequestSimple(t *testing.T) {
 }
 
 func TestRequestInvalidQuery(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 
@@ -38,6 +40,7 @@ func TestRequestInvalidQuery(t *testing.T) {
 }
 
 func TestRequestWithErrorNoType(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 	defer stopDefra()
@@ -48,6 +51,7 @@ func TestRequestWithErrorNoType(t *testing.T) {
 }
 
 func TestRequestWithErrorNoField(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 	defer stopDefra()

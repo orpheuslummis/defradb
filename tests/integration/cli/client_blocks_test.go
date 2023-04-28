@@ -13,18 +13,21 @@ package clitest
 import "testing"
 
 func TestClientBlocksEmpty(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stdout, _ := runDefraCommand(t, conf, []string{"client", "blocks"})
 	assertContainsSubstring(t, stdout, "Usage:")
 }
 
 func TestClientBlocksGetEmpty(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stdout, _ := runDefraCommand(t, conf, []string{"client", "blocks", "get"})
 	assertContainsSubstring(t, stdout, "Usage:")
 }
 
 func TestClientBlocksGetInvalidCID(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 	stdout, _ := runDefraCommand(t, conf, []string{"client", "blocks", "get", "invalid-cid"})
@@ -33,6 +36,7 @@ func TestClientBlocksGetInvalidCID(t *testing.T) {
 }
 
 func TestClientBlocksGetNonExistentCID(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 	stdout, _ := runDefraCommand(t, conf, []string{"client", "blocks", "get", "bafybeieelb43ol5e5jiick2p7k4p577ph72ecwcuowlhbops4hpz24zhz4"})

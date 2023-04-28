@@ -25,6 +25,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -108,9 +109,9 @@ func runDefraNode(t *testing.T, conf DefraNodeConfig) func() []string {
 func runDefraCommand(t *testing.T, conf DefraNodeConfig, args []string) (stdout, stderr []string) {
 	t.Helper()
 	cfg := config.DefaultConfig()
-	args = append([]string{
-		"--url", conf.APIURL,
-	}, args...)
+	if !contains(args, "--url") {
+		args = append(args, "--url", conf.APIURL)
+	}
 	if !contains(args, "--rootdir") {
 		args = append(args, "--rootdir", t.TempDir())
 	}
@@ -153,6 +154,8 @@ func readLoglines(t *testing.T, fpath string) ([]string, error) {
 }
 
 func captureOutput(f func()) (stdout, stderr []string) {
+	var mu sync.Mutex
+	mu.Lock()
 	oldStdout := os.Stdout
 	oldStderr := os.Stderr
 	rStdout, wStdout, err := os.Pipe()
@@ -188,7 +191,8 @@ func captureOutput(f func()) (stdout, stderr []string) {
 
 	stdout = strings.Split(strings.TrimSuffix(stdoutBuf.String(), "\n"), "\n")
 	stderr = strings.Split(strings.TrimSuffix(stderrBuf.String(), "\n"), "\n")
-
+	mu.Unlock()
+	fmt.Println("done with captureOutput")
 	return
 }
 

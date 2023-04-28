@@ -17,6 +17,7 @@ import (
 )
 
 func TestAddSchemaFromFile(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 
@@ -35,6 +36,7 @@ func TestAddSchemaFromFile(t *testing.T) {
 }
 
 func TestAddSchemaWithDuplicateType(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stopDefra := runDefraNode(t, conf)
 

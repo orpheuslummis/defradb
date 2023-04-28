@@ -16,6 +16,7 @@ import (
 )
 
 func TestStartCommandBasic(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	_, stderr := runDefraCommand(t, conf, []string{
 		"start",
@@ -27,6 +28,7 @@ func TestStartCommandBasic(t *testing.T) {
 }
 
 func TestStartCommandWithTLSIncomplete(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	_, stderr := runDefraCommand(t, conf, []string{
 		"start",
@@ -39,6 +41,7 @@ func TestStartCommandWithTLSIncomplete(t *testing.T) {
 }
 
 func TestStartCommandWithStoreMemory(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	_, stderr := runDefraCommand(t, conf, []string{
 		"start", "--store", "memory",
@@ -51,6 +54,7 @@ func TestStartCommandWithStoreMemory(t *testing.T) {
 }
 
 func TestStartCommandWithP2PAddr(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	p2pport, err := findFreePortInRange(49152, 65535)
 	if err != nil {
@@ -70,6 +74,7 @@ func TestStartCommandWithP2PAddr(t *testing.T) {
 }
 
 func TestStartCommandWithNoP2P(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	_, stderr := runDefraCommand(t, conf, []string{
 		"start",
@@ -81,6 +86,7 @@ func TestStartCommandWithNoP2P(t *testing.T) {
 }
 
 func TestStartCommandWithInvalidStoreType(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	_, stderr := runDefraCommand(t, conf, []string{
 		"start",

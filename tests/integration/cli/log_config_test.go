@@ -39,6 +39,7 @@ var (
 )
 
 func TestCLILogsToStderrGivenNamedLogLevel(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	logLines := captureLogLines(
 		t,

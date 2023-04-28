@@ -17,12 +17,14 @@ import (
 )
 
 func TestRootCommandEmptyRootDir(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stdout, _ := runDefraCommand(t, conf, []string{})
 	assert.Contains(t, stdout, "Usage:")
 }
 
 func TestRootCommandRootDirWithDefaultConfig(t *testing.T) {
+	t.Parallel()
 	conf := DefraNodeConfig{
 		logPath: t.TempDir(),
 	}
@@ -31,12 +33,14 @@ func TestRootCommandRootDirWithDefaultConfig(t *testing.T) {
 }
 
 func TestRootCommandRootDirFromEnv(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stdout, _ := runDefraCommand(t, conf, []string{})
 	assert.Contains(t, stdout, "Usage:")
 }
 
 func TestRootCommandRootWithNonexistentFlag(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stdout, _ := runDefraCommand(t, conf, []string{"--foo"})
 	assert.Contains(t, stdout, "Usage:")

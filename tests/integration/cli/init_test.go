@@ -21,6 +21,7 @@ import (
 
 // Executing init command creates valid config file.
 func TestCLIInitCommand(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	_, stderr := runDefraCommand(t, conf, []string{"init", "--rootdir", conf.rootDir})
 	cfgfilePath := filepath.Join(conf.rootDir, config.DefaultConfigFileName)
@@ -31,6 +32,7 @@ func TestCLIInitCommand(t *testing.T) {
 }
 
 func TestCLIInitCommandTwiceErrors(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	cfgfilePath := filepath.Join(conf.rootDir, config.DefaultConfigFileName)
 	_, stderr := runDefraCommand(t, conf, []string{"init", "--rootdir", conf.rootDir})
@@ -41,6 +43,7 @@ func TestCLIInitCommandTwiceErrors(t *testing.T) {
 
 // Executing init command twice, but second time reinitializing.
 func TestInitCommandTwiceReinitalize(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	cfgfilePath := filepath.Join(conf.rootDir, config.DefaultConfigFileName)
 	_, stderr := runDefraCommand(t, conf, []string{"init", "--rootdir", conf.rootDir})

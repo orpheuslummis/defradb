@@ -20,6 +20,7 @@ import (
 
 // note: this assumes the version information *without* build-time info integrated.
 func TestExecVersion(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stdout, stderr := runDefraCommand(t, conf, []string{"version"})
 	for _, line := range stderr {
@@ -31,6 +32,7 @@ func TestExecVersion(t *testing.T) {
 }
 
 func TestExecVersionJSON(t *testing.T) {
+	t.Parallel()
 	conf := NewDefraNodeDefaultConfig(t)
 	stdout, stderr := runDefraCommand(t, conf, []string{"version", "--format", "json"})
 	for _, line := range stderr {
